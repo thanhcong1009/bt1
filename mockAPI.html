@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="./jquery-3.6.0.min.js"></script>
+
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Image</th>
+            <th>Price</th>
+            <th></th>
+        </tr>
+    </table>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            $.ajax({
+                url: 'https://621366faf43692c9c6033e18.mockapi.io/project',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    // console.log("ajax data: ", data);
+                    let table = $('table');
+                    data.forEach(value => {
+                        table.append(`<tr>
+                                        <td>${value.id}</td>
+                                        <td>${value.name}</td>
+                                        <td><img src="${value.image}" class="" />
+                                        </td>
+                                        <td>${value.price}</td>
+                                        <td><button data-id="${value.id}">Xóa</button></td>
+                                    </tr>`)
+                        table.find(`button[data-id="${value.id}"]`).click(function() {
+                            $.ajax({
+                                url: 'https://621366faf43692c9c6033e18.mockapi.io/project/' + $(this).data('id'),
+                                type: 'DELETE',
+                            })
+                            .done((data) => {
+                                this.parentElement.parentElement.remove();
+                                alert("Xóa thành công id: " + data.id)
+                            })
+                        })
+                    });
+                }
+            });
+        })
+    </script>
+</body>
+</html>
